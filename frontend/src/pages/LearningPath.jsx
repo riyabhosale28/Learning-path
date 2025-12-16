@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import { api } from "../api/api";
 import { useParams } from "react-router-dom";
+import {AuthContext} from "../context/AuthContext";
 
 export default function LearningPath() {
   const { id } = useParams();
+  const {user}=useContext(AuthContext);
   const [items, setItems] = useState([]);
   const [explanations,setExplanations]=useState({});
   const [loadingId,setLoadingId]=useState(null);
@@ -15,24 +17,23 @@ export default function LearningPath() {
 
   async function explainTopic(item){
    if (item.ai_explanation) return;
-
-   
-
+setLoadingId(item.topicId);
     const res=await api("/ai/explain","POST",{
     topic:item.topicName,
             userScore:40,
             targetScore:80,
-            role:"frontend",
-             pathItemId: item.id
+            role:"user.target_role",
+             pathItemId: item.topicId
 
     });
  setItems(prev =>
     prev.map(it =>
-      it.id === item.id
+      it.topicId === item.topicId
         ? { ...it, ai_explanation: res.explanation }
         : it
     )
   );
+  setLoadingId(null);
 }
   
   return (
@@ -41,7 +42,7 @@ export default function LearningPath() {
 
       <ol>
         {items.map((item, index) => (
-          <li key={index} style={{ marginBottom: "1.5rem" }}>
+          <li key={item.topicId} style={{ marginBottom: "1.5rem" }}>
             <strong>{item.topicName}</strong>
 
             {item.resource ? (

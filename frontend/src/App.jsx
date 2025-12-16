@@ -25,7 +25,9 @@ export default function App(){
         path="/assessment"
         element={
           <ProtectedRoute>
+            <RequiredRole>
             <Assessment />
+            </RequiredRole>
           </ProtectedRoute>
         }
       />
@@ -33,13 +35,21 @@ export default function App(){
         path="/dashboard"
         element={
           <ProtectedRoute>
-             <RequiredRole>
+           
             <Dashboard />
-            </RequiredRole>
-            
+           
+          
           </ProtectedRoute>
         }
       />
+      <Route
+  path="/select-role"
+  element={
+    <ProtectedRoute>
+      <SelectRole />
+    </ProtectedRoute>
+  }
+/>
     
 <Route
         path="/path/:id"
@@ -70,14 +80,7 @@ element={<AICoach />} />
     </ProtectedRoute>
   }
 />
-<Route
-  path="/select-role"
-  element={
-    <ProtectedRoute>
-      <SelectRole />
-    </ProtectedRoute>
-  }
-/>
+
 
 
     </Routes>

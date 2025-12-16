@@ -28,6 +28,7 @@ export default function Navbar(){
                 {user ? (
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
           <Link to="/dashboard">Dashboard</Link>
+          <Link to="/assessment">Take Assessment</Link>
           <Link to="/coach">AI Coach</Link>
           <button onClick={handleLogout}>Logout</button>
         </div>

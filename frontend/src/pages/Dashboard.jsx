@@ -31,7 +31,7 @@ export default function Dashboard(){
 }*/
 
 
-import { useContext, useState } from "react";
+import { useContext, useState,useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { api } from "../api/api";
 import { useNavigate } from "react-router-dom";
@@ -40,6 +40,14 @@ export default function Dashboard() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!user.target_role) {
+      navigate("/select-role", { replace: true });
+    }
+  }, [user, navigate]);
+
+  if (!user.target_role) return null;
 
   async function generatePath() {
     try {
@@ -54,6 +62,8 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
+
+
   }
 
   return (

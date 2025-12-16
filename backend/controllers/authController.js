@@ -25,7 +25,7 @@ async function  login(req,res) {
         const {email,password}=req.body;
          console.log("EMAIL:", email);
     console.log("PASSWORD:", password);
-        const[rows]=await pool.query('SELECT id,name,email,password_hash,target_role from users where email=?',[email]);
+        const[rows]=await pool.query('SELECT id,name,email,password_hash,target_role,has_assessed from users where email=?',[email]);
         const user=rows[0];
         if(!user)return res.status(401).json({error:'Invalid credentials'});
          console.log("DB HASH:", user.password_hash); 
@@ -33,7 +33,7 @@ async function  login(req,res) {
          console.log("PASSWORD MATCH:", match); // ✅ TRUE / FALSE
         if(!match)return res.status(401).json({error:'Invalid credentials'});
         const token=jwt.sign({userId:user.id,email:user.email},JWT_SECRET,{expiresIn:'7d'});
-        res.json({token,user:{id:user.id,name:user.name,email:user.email,target_role:user.target_role}});
+        res.json({token,user:{id:user.id,name:user.name,email:user.email,target_role:user.target_role,has_assessed:user.has_assessed}});
     }catch(err){
         console.error(err);
         res.status(500).json({error:'Login failed'});

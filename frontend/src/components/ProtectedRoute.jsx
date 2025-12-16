@@ -22,12 +22,7 @@ export default function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace/>;
   }
 
-  // 2️⃣ Logged in BUT role not selected → select-role
-  if (!user.target_role) {
-    return <Navigate to="/select-role" />;
-  }
-
-  // 3️⃣ Logged in + role selected → allow access
+ 
   return children;
 }
 

@@ -53,7 +53,7 @@ import { AuthContext } from "../context/AuthContext";
 import ROLE_CONFIG from "../config/roles";
 
 export default function Assessment() {
-  const { user } = useContext(AuthContext);
+  const { user,setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   // 1️⃣ if user somehow reached here without role, send them to select-role
@@ -94,12 +94,14 @@ export default function Assessment() {
         skillScores,
       };
 
-      console.log("ASSESSMENT PAYLOAD:", payload);
-
+      
       const res = await api("/assess", "POST", payload);
-      console.log("ASSESSMENT RESPONSE:", res);
+     
 
-      // after successful save → go to dashboard
+      setUser((prev)=>({
+        ...prev,
+        has_assessed:true
+      }))
       navigate("/dashboard");
     } catch (err) {
       console.error("ASSESSMENT ERROR:", err);
