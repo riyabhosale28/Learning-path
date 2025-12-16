@@ -1,7 +1,9 @@
-import { useState, useContext } from "react";
+import { useState, useContext,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import { AuthContext } from "../context/AuthContext";
+
+
 
 const ROLES = [
   {
@@ -28,9 +30,21 @@ const ROLES = [
 
 export default function SelectRole() {
   const { user, setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [selectedRole, setSelectedRole] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  
+
+
+  useEffect(() => {
+  if (user?.target_role) {
+    navigate("/dashboard",{replace:true});
+  }
+}, [user,navigate ]);
+
+if(!user){
+  return <h3>Loading user...</h3>
+}
 
   async function handleContinue() {
     if (!selectedRole) return;
@@ -47,7 +61,7 @@ export default function SelectRole() {
      setUser((prev) => ({ ...prev, target_role: selectedRole }));
 
 setTimeout(() => {
-  navigate("/assessment");
+  navigate("/dashboard");
 }, 200);
 
     } catch (err) {

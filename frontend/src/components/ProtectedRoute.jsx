@@ -1,4 +1,4 @@
-import { useContext } from "react";
+/*import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
@@ -6,4 +6,28 @@ export default function ProtectedRoute({ children }) {
   const { user } = useContext(AuthContext);
 
   return user ? children : <Navigate to="/login" />;
+}*/
+
+
+
+import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+
+export default function ProtectedRoute({ children }) {
+  const { user } = useContext(AuthContext);
+
+  // 1️⃣ Not logged in → login
+  if (!user) {
+    return <Navigate to="/login" replace/>;
+  }
+
+  // 2️⃣ Logged in BUT role not selected → select-role
+  if (!user.target_role) {
+    return <Navigate to="/select-role" />;
+  }
+
+  // 3️⃣ Logged in + role selected → allow access
+  return children;
 }
+

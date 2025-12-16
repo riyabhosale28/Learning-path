@@ -1,13 +1,22 @@
 const pool=require('../db');
 const ROLE_TARGETS={
-    frontend:{javascript:85,react:80,css:70},
+    frontend:{javascript:85,react:80,css:70,html:70},
     backend:{node:80,sql:75,algorithms:60},
-    fullstack:{javascript:80,node:75,react:75,sql:70}
+    fullstack:{javascript:80,node:75,react:75,sql:70},
+    analyst: { sql: 80, statistics: 75 },
 };
 function difficultyRank(d){return {beginner:1,intermediate:2,advanced:3}[d]||2;}
-async function generateRecommendations(req,res){
-    try{
-        const {userId,desiredRole='frontend',maxTopics=6}=req.body;
+async function generateRecommendations(req, res) {
+  try {
+    const { userId, maxTopics = 6 } = req.body;
+
+    // 1️⃣ get user's selected role
+    const [[userRow]] = await pool.query(
+      "SELECT target_role FROM users WHERE id = ?",
+      [userId]
+    );
+
+    const desiredRole = userRow?.target_role || "frontend";
         const targets=ROLE_TARGETS[desiredRole]||ROLE_TARGETS['frontend'];
         const[userSkillRows]=await pool.query(`
             SELECT s.name  as skill,us.score From user_skills us JOIN skills s on s.id=us.skill_id where us.user_id=?`

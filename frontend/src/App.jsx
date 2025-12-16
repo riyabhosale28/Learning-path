@@ -11,16 +11,13 @@ import AICoach from "./pages/AICoach";
 import McqTest from "./pages/McqTest";
 import McqHome from "./pages/McqHome";
 import SelectRole from "./pages/SelectRole";
-
-
+import RequiredRole from "./components/RequiredRole";
 
 export default function App(){
   return(
   <div>
     <Navbar />
     <main >
-
-    
     <Routes>
       <Route path="/login" element={<Login/>}/>
       <Route path="/register" element={<Register/>} />
@@ -32,12 +29,14 @@ export default function App(){
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
+             <RequiredRole>
             <Dashboard />
+            </RequiredRole>
+            
           </ProtectedRoute>
         }
       />
@@ -85,4 +84,4 @@ element={<AICoach />} />
     </main>
     </div>
   );
-}   
+}      

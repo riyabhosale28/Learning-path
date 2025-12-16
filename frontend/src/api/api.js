@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:4000/api";
+/*const BASE_URL = "http://localhost:4000/api";
 
 export async function api(endpoint, method = "GET", body) {
   const token = localStorage.getItem("token");
@@ -18,4 +18,29 @@ export async function api(endpoint, method = "GET", body) {
 
 
   return res.json();
+}*/
+
+
+const BASE_URL = "http://localhost:4000/api";
+
+export async function api(endpoint, method = "GET", body) {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${BASE_URL}${endpoint}`, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    body: method !== "GET" ? JSON.stringify(body) : undefined,
+  });
+
+  // NEW: check status
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Request failed");
+  }
+
+  return res.json();
 }
+

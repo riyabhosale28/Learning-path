@@ -46,7 +46,7 @@ export default function Dashboard() {
       setLoading(true);
       const res = await api("/recommend", "POST", {
         userId: user.id,
-        desiredRole: user.desired_role || "frontend",
+        desiredRole: user.target_role || "frontend",
       });
       navigate(`/path/${res.pathId}`);
     } catch (err) {
@@ -57,6 +57,7 @@ export default function Dashboard() {
   }
 
   return (
+   
   <div className="dashboard-container">
     <div className="dashboard-header">
       <h1>Welcome, {user.name} 👋</h1>

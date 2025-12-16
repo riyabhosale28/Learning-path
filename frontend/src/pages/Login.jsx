@@ -10,10 +10,10 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  async function handleLogin(e) {
+  /*async function handleLogin(e) {
     e.preventDefault(); // ✅ VERY IMPORTANT (stops page reload)
 
-    console.log("Login clicked"); // ✅ debug
+   
 
     const data = await api("/auth/login", "POST", {
       email,
@@ -22,19 +22,40 @@ export default function Login() {
 
     console.log("LOGIN RESPONSE:", data); // ✅ must appear
 
-    if (data.token) {
-      login(data.user, data.token);
-      navigate("/select-role");
-    } else {
-      alert("Invalid login");
-    }
-  
-  /*if (user.target_role) {
+    
+      login(data.user,data.token);
+
+if (data.user.target_role) {
   navigate("/dashboard");
 } else {
   navigate("/select-role");
-}*/
+}
+
+  
+
+  }*/
+
+
+async function handleLogin(e) {
+  e.preventDefault();
+
+  const data = await api("/auth/login", "POST", {
+    email,
+    password,
+  });
+
+  console.log("LOGIN RESPONSE:", data);
+
+  // ✅ FIX: use data.user & data.token
+  login(data.user, data.token);
+
+  // ✅ FIX: redirect based on target_role
+  if (data.user.target_role) {
+    navigate("/dashboard");
+  } else {
+    navigate("/select-role");
   }
+}
 
 
   return (
