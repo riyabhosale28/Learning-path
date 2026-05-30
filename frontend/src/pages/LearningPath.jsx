@@ -67,8 +67,9 @@ setLoadingId(item.topicId);
                 Why recommended?
               </button>
             </div>
+           {/*change*/}
 
-            {loadingId === item.topicName && (
+            {loadingId === item.topicId && (
               <p style={{ color: "gray" }}>Thinking...</p>
             )}
 
