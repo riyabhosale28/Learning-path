@@ -1,10 +1,9 @@
-const OpenAI=require("openai");
+const {GoogleGenerativeAI}=require("@google/generative-ai");
 const pool=require("../db");
 
-const openai=new OpenAI({
-    apiKey:process.env.OPEN_API_KEY,
-
-});
+const genAi = new GoogleGenerativeAI(
+  process.env.GEMINI_API_KEY
+);
 
 async function coachChat(req,res){
     try{
@@ -44,13 +43,20 @@ Answer clearly, practically, and briefly.
 Suggest next actions when possible.
 `;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.5,
-    });
+    const model = genAi.getGenerativeModel({
+  model: "gemini-1.5-flash",
+});
 
-    const reply = completion.choices[0].message.content;
+// const prompt = messages
+//   .map(msg => `${msg.role}: ${msg.content}`)
+//   .join("\n");
+
+const result = await model.generateContent(prompt);
+
+const reply = result.response.text();
+console.log("GEMINI KEY:", process.env.GEMINI_API_KEY);
+
+    // const reply = reply.choices[0].message.content;
 
     // ✅ Save chat
     await pool.query(
@@ -69,3 +75,4 @@ Suggest next actions when possible.
 }
 
 module.exports = { coachChat };
+

@@ -1,8 +1,9 @@
-const OpenAI=require("openai");
+const { GoogleGenerativeAI}=require("@google/generative-ai");
+
 const pool=require("../db");
-const openai=new OpenAI({
-    apiKey:process.env.OPEN_API_KEY,
-});
+const genAi=new GoogleGenerativeAI(
+    process.env.GEMINI_API_KEY
+);
 
 async function explainTopic(req,res){
     try{
@@ -30,12 +31,13 @@ async function explainTopic(req,res){
         -keep it under 60 words
         `;
 
-        const completion=await openai.chat.completions.create({
-            model:"gpt-4o-mini",
-            messages:[{role:"user",content:prompt}],
-            temperature:0.4,
-        });
-         const explanation = completion.choices[0].message.content;
+        const model = genAi.getGenerativeModel({
+    model: "gemini-1.5-flash",
+});
+
+const result = await model.generateContent(prompt);
+
+const explanation = result.response.text();
          await pool.query(
       "UPDATE learning_path_items SET ai_explanation = ? WHERE id = ?",
       [explanation, pathItemId]
