@@ -1,9 +1,9 @@
-const { GoogleGenerativeAI}=require("@google/generative-ai");
+const Groq=require("groq-sdk");
 
 const pool=require("../db");
-const genAi=new GoogleGenerativeAI(
-    process.env.GEMINI_API_KEY
-);
+const groq=new Groq({
+    apiKey:process.env.GROQ_API_KEY,
+});
 
 async function explainTopic(req,res){
     try{
@@ -22,22 +22,33 @@ async function explainTopic(req,res){
         Explain in simple and encouraging language why this topic is recommened.
         Role:${role}
         Topic:${topic}
-        User Score:${userScore}
-        Expected Score:${targetScore}
+        // User Score:${userScore}
+        // Expected Score:${targetScore}
         
-        Explain clearly:
-        -why the gap matters
-        -how learning this topic helps
-        -keep it under 60 words
+        Explain specifically for the topic "${topic}".
+
+// Role: ${role}
+
+// Current score: ${userScore}
+// Target score: ${targetScore}
+
+Explain:
+- why this topic is important for the role
+- what practical skills the user will gain
+- how learning it improves career readiness
+
+Keep it under 50 words.
         `;
-
-        const model = genAi.getGenerativeModel({
-    model: "gemini-1.5-flash",
+const completion=await groq.chat.completions.create({
+    messages:[
+        {
+            role:"user",
+            content:prompt,
+        },
+    ],
+    model:"llama-3.3-70b-versatile",
 });
-
-const result = await model.generateContent(prompt);
-
-const explanation = result.response.text();
+const explanation=completion.choices[0].message.content;
          await pool.query(
       "UPDATE learning_path_items SET ai_explanation = ? WHERE id = ?",
       [explanation, pathItemId]

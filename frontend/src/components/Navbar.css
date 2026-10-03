@@ -1,0 +1,95 @@
+.navbar {
+  height: 70px;
+  background: #1e3a8a;
+  color: white;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 40px;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.logo span {
+  color: #bfdbfe;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: .3s;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+
+.nav-links a:hover {
+  background: rgba(255,255,255,.15);
+}
+
+.nav-links .active {
+  background: white;
+  color: #1e3a8a;
+  font-weight: 600;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-info {
+  text-align: right;
+}
+
+.user-info h4 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.user-info p {
+  margin: 0;
+  color: #dbeafe;
+  font-size: 13px;
+}
+
+.logout-btn {
+  background: #ef4444;
+  color: white;
+
+  border: none;
+
+  padding: 10px 16px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}

@@ -2,17 +2,7 @@ const pool=require("../db");
 async function getLearningPath(req,res){
     try{
         const {id}=req.params;
-        /*const [rows]=await pool.query(`
-            SELECT t.name as topicName,
-            lpi.priority,
-            r.title as resourceTitle,
-            r.url as resourceUrl,
-            r.difficulty as resourceDifficulty
-            from learning_path_items lpi
-            join topics t on t.id=lpi.topic_id
-            left join resources r on r.id=lpi.resource_id
-            where lpi.path_id=?
-            order by lpi.priority desc`,[id]);*/
+        
 
 
         const [rows]=await pool.query(`SELECT
@@ -29,8 +19,21 @@ async function getLearningPath(req,res){
   WHERE lpi.path_id = ?
   ORDER BY lpi.priority DESC`,[id]);
 
-            const items = rows.map(r => ({
+//             const items = rows.map(r => ({
+//   id: r.id,
+//   topicName: r.topicName,
+//   priority: r.priority,
+//   ai_explanation: r.ai_explanation,
+//   resource: r.resourceTitle ? {
+//     title: r.resourceTitle,
+//     url: r.resourceUrl,
+//     difficulty: r.resourceDifficulty
+//   } : null
+// }));
+
+const items = rows.map(r => ({
   id: r.id,
+  topicId: r.topic_id,   // add this
   topicName: r.topicName,
   priority: r.priority,
   ai_explanation: r.ai_explanation,

@@ -102,7 +102,7 @@ async function submitMcqTest(req, res) {
 
     const [rows] = await pool.query(
       `
-      SELECT id, correct_option
+      SELECT id, question, correct_option,explanation 
       FROM mcq_questions
       WHERE id IN (${questionIds.map(() => "?").join(",")})
       `,
@@ -113,14 +113,25 @@ async function submitMcqTest(req, res) {
     rows.forEach((r) => {
       correctMap[r.id] = r.correct_option;
     });
+    const wrongAnswers = [];
 
     // 3️⃣ Calculate score
-    let correctCount = 0;
-    answers.forEach((a) => {
-      if (correctMap[a.questionId] === a.selected) {
-        correctCount++;
-      }
+let correctCount = 0;
+
+answers.forEach((a) => {
+  const q = rows.find((r) => r.id === a.questionId);
+
+  if (correctMap[a.questionId] === a.selected) {
+    correctCount++;
+  } else {
+    wrongAnswers.push({
+      question: q.question,
+      selected: a.selected,
+      correct: q.correct_option,
+      explanation: q.explanation,
     });
+  }
+});
 
     const total = answers.length;
     const score = Math.round((correctCount / total) * 100);
@@ -158,9 +169,41 @@ async function submitMcqTest(req, res) {
       [userId, skillId]
     );
 
-    const newScore = existing
-      ? Math.max(existing.score, score)
-      : score;
+    // const newScore = existing
+    //   ? Math.max(existing.score, score)
+    //   : score;
+
+    // let newScore;
+    // if(existing){
+    //   newScore=Math.round((existing.score*0.4)+(score*0.6));
+    // }else{
+    //   newScore=score;
+    // }
+    let newScore;
+
+if(existing){
+
+    newScore=Math.round(
+
+        existing.score*0.5+
+
+        score*0.5
+
+    );
+
+    if(score>existing.score){
+
+        newScore+=5;
+
+    }
+
+}else{
+
+    newScore=score;
+
+}
+
+newScore=Math.min(100,newScore);
 
     await pool.query(
       `
@@ -171,13 +214,21 @@ async function submitMcqTest(req, res) {
       [userId, skillId, newScore, newScore]
     );
 
-    res.json({
-      message: "MCQ test submitted successfully",
-      score,
-      correct: correctCount,
-      total,
-      updatedSkillScore: newScore
-    });
+   res.json({
+  message: "Assessment Complete",
+
+  score,
+
+  correct: correctCount,
+
+  wrong: total - correctCount,
+
+  total,
+
+  updatedSkillScore: newScore,
+
+  wrongAnswers
+});
   } catch (err) {
     console.error("MCQ SUBMIT ERROR:", err);
     res.status(500).json({ error: "Failed to submit MCQ test" });

@@ -1,9 +1,10 @@
-const {GoogleGenerativeAI}=require("@google/generative-ai");
+const Groq=require("groq-sdk");
+
 const pool=require("../db");
 
-const genAi = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY
-);
+const groq=new Groq({
+  apiKey:process.env.GROQ_API_KEY,
+});
 
 async function coachChat(req,res){
     try{
@@ -43,17 +44,22 @@ Answer clearly, practically, and briefly.
 Suggest next actions when possible.
 `;
 
-    const model = genAi.getGenerativeModel({
-  model: "gemini-1.5-flash",
-});
+    const completion=await groq.chat.completions.create({
+      messages:[
+        {
+          role:"user",
+          content:prompt,
+        },
+      ],
+      model:"llama-3.3-70b-versatile",
+    });
+const reply=completion.choices[0].message.content;
 
 // const prompt = messages
 //   .map(msg => `${msg.role}: ${msg.content}`)
 //   .join("\n");
 
-const result = await model.generateContent(prompt);
 
-const reply = result.response.text();
 console.log("GEMINI KEY:", process.env.GEMINI_API_KEY);
 
     // const reply = reply.choices[0].message.content;
@@ -67,6 +73,11 @@ console.log("GEMINI KEY:", process.env.GEMINI_API_KEY);
     res.json({ reply });
 
   } catch (err) {
+    console.log("===== ERROR =====");
+  console.log(err);
+  console.log("Message:", err.message);
+  console.log("Cause:", err.cause);
+
     console.error("AI COACH ERROR:", err);
     res.status(500).json({ error: "AI coach failed" });
 

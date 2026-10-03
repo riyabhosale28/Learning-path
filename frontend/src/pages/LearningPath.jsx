@@ -17,18 +17,20 @@ export default function LearningPath() {
 
   async function explainTopic(item){
    if (item.ai_explanation) return;
-setLoadingId(item.topicId);
+setLoadingId(item.id);
     const res=await api("/ai/explain","POST",{
     topic:item.topicName,
             userScore:40,
             targetScore:80,
-            role:"user.target_role",
-             pathItemId: item.topicId
+            role:user?.target_role,
+             pathItemId: item.id
 
     });
+    console.log("Clicked:", item.topicName);
+console.log("Response:", res.explanation);
  setItems(prev =>
     prev.map(it =>
-      it.topicId === item.topicId
+      it.id === item.id
         ? { ...it, ai_explanation: res.explanation }
         : it
     )
@@ -42,7 +44,7 @@ setLoadingId(item.topicId);
 
       <ol>
         {items.map((item, index) => (
-          <li key={item.topicId} style={{ marginBottom: "1.5rem" }}>
+          <li key={item.id} style={{ marginBottom: "1.5rem" }}>
             <strong>{item.topicName}</strong>
 
             {item.resource ? (
@@ -69,7 +71,7 @@ setLoadingId(item.topicId);
             </div>
            {/*change*/}
 
-            {loadingId === item.topicId && (
+            {loadingId === item.id && (
               <p style={{ color: "gray" }}>Thinking...</p>
             )}
 

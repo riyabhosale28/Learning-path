@@ -1,9 +1,9 @@
 const pool = require("../db");
 const ROLE_TARGETS = {
-  frontend: { javascript: 85, react: 80, css: 70, html: 70 },
-  backend: { node: 80, sql: 75, algorithms: 60 },
-  fullstack: { javascript: 80, node: 75, react: 75, sql: 70 },
-  analyst: { sql: 80, statistics: 75 },
+  frontend: { html:80,css:80,jvascript:85,react:80 },
+  backend: { node: 85, sql: 75, mongodb:75,apis:80,authentication:75 },
+  fullstack: { javascript: 85, node: 80, react: 80, sql: 75,html:80,css:80 },
+  analyst: { sql: 85, statistics: 75,python:80,powerbi:80 },
 };
 function difficultyRank(d) {
   return { beginner: 1, intermediate: 2, advanced: 3 }[d] || 2;
@@ -29,8 +29,7 @@ async function generateRecommendations(req, res) {
     const userScores = {};
     userSkillRows.forEach((r) => (userScores[r.skill] = r.score));
     const [topicSkillRows] = await pool.query(
-      /*`
-           SELECT t.id as topic_id,t.name as topic_name,ts.weight,s.name as skill from topics t JOIN topic_skills ts ON t.id=ts.topic_id JOIN skills s ON s.id=ts.skill_id`*/
+      
       `SELECT 
   t.id AS topic_id,
   t.name AS topic_name,
@@ -38,9 +37,10 @@ async function generateRecommendations(req, res) {
   ts.weight,
   s.name AS skill
 FROM topics t
-JOIN topic_skills ts ON t.id = ts.topic_id
-JOIN skills s ON s.id = ts.skill_id
-`
+JOIN topic_skills ts ON t.id=ts.topic_id
+JOIN skills s ON s.id=ts.skill_id
+JOIN role_topics rt ON rt.topic_id=t.id where rt.role_name=?
+`,[desiredRole]
     );
 
     console.log("USER SCORES:", userScores);

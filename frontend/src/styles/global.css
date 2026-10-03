@@ -1,4 +1,4 @@
-body {
+/* body {
   font-family: Arial, sans-serif;
   padding: 20px;
   background: #f4f6f8;
@@ -7,4 +7,54 @@ body {
 input, button {
   margin: 6px;
   padding: 8px;
+} */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI,sans-serif;
+}
+
+body{
+  background:#f8fafc;
+  color:#111827;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
+}
+
+.btn{
+  background:#2563eb;
+  color:white;
+  border:none;
+  padding:12px 24px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.btn:hover{
+  background:#1e40af;
+}
+
+.card{
+  background:white;
+  border-radius:16px;
+  padding:24px;
+  box-shadow:0 4px 20px rgba(0,0,0,.08);
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:24px;
 }

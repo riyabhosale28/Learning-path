@@ -51,6 +51,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../api/api";
 import { AuthContext } from "../context/AuthContext";
 import ROLE_CONFIG from "../config/roles";
+import "./Assessment.css";
 
 export default function Assessment() {
   const { user,setUser } = useContext(AuthContext);
@@ -112,35 +113,63 @@ export default function Assessment() {
   }
 
   return (
-    <div className="assessment-container">
-      <h2>Skill Assessment – {roleInfo.label}</h2>
-      <p className="muted">
-        Tell us how confident you feel in each skill. We'll use this to build
-        your personalized learning path.
-      </p>
+    // <div className="assessment-container">
+    //   <h2>Skill Assessment – {roleInfo.label}</h2>
+    //   <p className="muted">
+    //     Tell us how confident you feel in each skill. We'll use this to build
+    //     your personalized learning path.
+    //   </p>
 
-      <form onSubmit={handleSubmit}>
-        <div className="slider-list">
-          {roleInfo.skills.map((skill) => (
-            <div key={skill} className="slider-row">
-              <label>
-                {skill.toUpperCase()} : {scores[skill]}
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={scores[skill]}
-                onChange={(e) => handleChange(skill, e.target.value)}
-              />
+    //   <form onSubmit={handleSubmit}>
+    //     <div className="slider-list">
+    //       {roleInfo.skills.map((skill) => (
+    //         <div key={skill} className="slider-row">
+    //           <label>
+    //             {skill.toUpperCase()} : {scores[skill]}
+    //           </label>
+    //           <input
+    //             type="range"
+    //             min="0"
+    //             max="100"
+    //             value={scores[skill]}
+    //             onChange={(e) => handleChange(skill, e.target.value)}
+    //           />
+    //         </div>
+    //       ))}
+    //     </div>
+
+    //     <button type="submit" disabled={submitting}>
+    //       {submitting ? "Saving..." : "Save & View Dashboard"}
+    //     </button>
+    //   </form>
+    // </div>
+    <div className="assessment-page">
+      <div className="assessment-header">
+        <h1>📝 Skill Assessment</h1>
+        <p>Evaluate your current skill level.We'll use your responses to generate a personalized AI learning path.</p>
+        <div className="role-chip">
+          Target Role:{roleInfo.label}
+        </div>
+      </div>
+      <div className="assessment-card">
+        <form onSubmit={handleSubmit}>
+          {roleInfo.skills.map((skill)=>(
+            <div className="skill-card" key={skill}>
+              <div className="skill-top">
+                <h3>{skill.toUpperCase()}</h3>
+                <span>{scores[skill]}%</span>
+              </div>
+              <input type="range" min="0" max="100" value={scores[skill]} onChange={(e)=>handleChange(skill,e.target.value)}/>
+              <div className="slider-labels">
+                <span>Begineer</span>
+                <span>Intermediate</span>
+                <span>Expert</span>
+              </div>
             </div>
           ))}
-        </div>
-
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Saving..." : "Save & View Dashboard"}
-        </button>
-      </form>
+          <button className="submit-btn" type="submit" disabled={submitting}>{submitting ? "Saving Assessment..." : "Save Assessment"}</button>
+        </form>
+      </div>
     </div>
   );
 }
